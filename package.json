@@ -1,13 +1,8 @@
 {
   "name": "homebridge-APC-Back-UPS-HS500",
-  "version": "01.0.0",
+  "version": "1.0.0",
   "description": "Homebridge plugin to connect to an APC Back-UPS HS500 UPS device.",
   "main": "index.js",
-  "scripts": {
-    "test": "npm run lint && npm run format",
-    "format": "prettier-eslint --write —eslint-config-path $(pwd)/.eslintrc.js \"$(pwd)/**/*.js\"",
-    "lint": "eslint ."
-  },
   "keywords": [
     "homebridge-plugin",
     "homebridge",
