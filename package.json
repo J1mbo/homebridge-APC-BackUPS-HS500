@@ -1,7 +1,7 @@
 {
-  "name": "homebridge-apcaccess",
-  "version": "0.1.0",
-  "description": "Ridiculously simple apcaccess wrapper",
+  "name": "homebridge-APC-Back-UPS-HS500",
+  "version": "01.0.0",
+  "description": "Homebridge plugin to connect to an APC Back-UPS HS500 UPS device.",
   "main": "index.js",
   "scripts": {
     "test": "npm run lint && npm run format",
@@ -12,31 +12,26 @@
     "homebridge-plugin",
     "homebridge",
     "apc",
-    "apcaccess",
-    "apcupsd"
+    "Back-UPS",
+    "HS500"
   ],
   "engines": {
     "homebridge": ">=0.2.5"
   },
-  "author": "Paul Curry",
+  "author": "James Pearce",
   "license": "MIT",
   "dependencies": {
-    "apcaccess": "^1.1.2"
+    "jsdom": ">=16.2.2",
+    "xmlhttprequest": ">=1.8.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cr3ative/homebridge-apcaccess.git"
+    "url": "git+https://github.com/J1mbo/homebridge-APC-Back-UPS-HS500.git"
   },
   "bugs": {
-    "url": "https://github.com/cr3ative/homebridge-apcaccess/issues"
+    "url": "https://github.com/J1mbo/homebridge-APC-Back-UPS-HS500/issues"
   },
-  "homepage": "https://github.com/cr3ative/homebridge-apcaccess#readme",
+  "homepage": "https://github.com/J1mbo/homebridge-APC-Back-UPS-HS500#readme",
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.20.0",
-    "prettier": "^1.19.1",
-    "prettier-eslint": "^9.0.1",
-    "prettier-eslint-cli": "^5.0.0"
   }
 }

@@ -1,0 +1,59 @@
+{
+  "pluginAlias": "APCBackUpsHS500",
+  "pluginType": "accessory",
+  "singular": false,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "default": "UPS Name",
+        "required": true
+      },
+      "model": {
+        "title": "UPS Model Number",
+        "type": "string",
+        "required": false
+      },
+      "upsIpAddress": {
+        "title": "UPS IP Address",
+        "type": "string",
+        "required": false
+      },
+      "statusCommand": {
+        "title": "Command to retrieve UPS status XML object",
+        "type": "string",
+        "default": "check-power-xml.sh",
+        "required": true
+      },
+      "serialNumber": {
+        "title": "UPS Serial Number",
+        "type": "string",
+        "required": false
+      },
+      "pollInterval": {
+        "title": "Interval (in seconds) to poll the status",
+        "type": "integer",
+        "default": 10,
+        "required": true
+      },
+      "lowBattery": {
+        "title": "Set Low Battery flag at (percent)",
+        "type": "integer",
+        "default": 20,
+        "required": true
+      }
+    }
+  },
+  "form": [
+    "name",
+    "model",
+    "upsIpAddress",
+    "statusCommand",
+    "serialNumber",
+    "pollInterval",
+    "lowBattery"
+  ],
+  "display": null
+}
