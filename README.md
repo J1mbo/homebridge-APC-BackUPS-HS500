@@ -1,6 +1,8 @@
 # homebridge-APC-Back-UPS-HS500
 
-An HomeBridge interface for APC's 'Structured Cabling' Back-UPS HS500 UPS device.
+** Note: work in progress **
+
+A HomeBridge interface for APC's 'Structured Cabling' Back-UPS HS500 UPS device.
 
 The plugin creates a Contact Sensor, which is capable of reporting state only, which is normally in the CLOSED state. If the UPS switches to battery power, the Contact Sensor reports OPEN state. Hence, alerts can be generated on Apple HomeKit device (in particular the watch). The battery charge percentage is also reported within the sensor (viewable on iPhone) along with a Low Battery alert.
 
@@ -19,5 +21,5 @@ Note: requires jsdom (npm install jsdom xmlhttprequest) - this will be installed
 
 # Configuration
 
-Installed through HomeBridge plugins UI, the settings are fully configurable in the UI:
+Installed through HomeBridge plugins UI, the settings are fully configurable in the UI.
 

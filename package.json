@@ -1,6 +1,6 @@
 {
-  "name": "homebridge-APC-Back-UPS-HS500",
-  "version": "1.0.0",
+  "name": "homebridge-apc-back-ups-hs500",
+  "version": "1.0.1",
   "description": "Homebridge plugin to connect to an APC Back-UPS HS500 UPS device.",
   "main": "index.js",
   "keywords": [
@@ -16,8 +16,11 @@
   "author": "James Pearce",
   "license": "MIT",
   "dependencies": {
-    "jsdom": ">=16.2.2",
-    "xmlhttprequest": ">=1.8.0"
+    "core-util-is": "^1.0.2",
+    "graceful-fs": "^4.2.4",
+    "jsdom": "^16.2.2",
+    "vinyl-fs": "^3.0.3",
+    "xmlhttprequest": "^1.8.0"
   },
   "repository": {
     "type": "git",
@@ -27,6 +30,8 @@
     "url": "https://github.com/J1mbo/homebridge-APC-Back-UPS-HS500/issues"
   },
   "homepage": "https://github.com/J1mbo/homebridge-APC-Back-UPS-HS500#readme",
-  "devDependencies": {
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
