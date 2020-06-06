@@ -19,4 +19,4 @@ Due to HS500 UPS management interface being very simple, the plugin works by cal
 
 Installed through HomeBridge plugins UI, the settings are fully configurable in the UI.
 
-<img src="https://user-images.githubusercontent.com/784541/83954785-1f9f5680-a844-11ea-858b-7f9c7f2a834c.png" width="250"/>
+<img src="https://user-images.githubusercontent.com/784541/83954978-f384d500-a845-11ea-97f8-62992137f1d0.png" width="250"/>
