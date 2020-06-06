@@ -13,11 +13,10 @@ This accessory:
 - Publishes a `BatteryService` to show charging state / battery levels.
 - Publishes two subscribable events: `Contact State` and `Low Battery`, for your push alerting pleasure.
 
-Due to HS500 UPS management interface being very simple, the plugin works by calling a shell script that queries the simple HTML interface and returns an XML record with the appropriate values. This step could no doubt be integrated into the code directly if you prefer.
-
-Note: requires jsdom (npm install jsdom xmlhttprequest) - this will be installed automatically when the plugin is installed through the HomeBridge UI.
+Due to HS500 UPS management interface being very simple, the plugin works by calling a shell script that queries the simple HTML interface and returns an JSON record with the appropriate values. This step could no doubt be integrated into the code directly if you prefer.
 
 # Configuration
 
 Installed through HomeBridge plugins UI, the settings are fully configurable in the UI.
 
+<img src="https://user-images.githubusercontent.com/784541/83954785-1f9f5680-a844-11ea-858b-7f9c7f2a834c.png" width="250"/>
