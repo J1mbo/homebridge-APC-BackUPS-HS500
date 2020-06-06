@@ -22,9 +22,9 @@
         "required": false
       },
       "statusCommand": {
-        "title": "Command to retrieve UPS status XML object",
+        "title": "Command to retrieve UPS status JSON object",
         "type": "string",
-        "default": "check-power-xml.sh",
+        "default": "check-power-json.sh",
         "required": true
       },
       "serialNumber": {
@@ -50,10 +50,18 @@
     "name",
     "model",
     "upsIpAddress",
-    "statusCommand",
     "serialNumber",
     "pollInterval",
-    "lowBattery"
+    "lowBattery",
+    {
+      "type": "fieldset",
+      "expandable": true,
+      "title": "Advanced Settings",
+      "description": "Don't change these, unless you understand what you're doing.",
+      "items": [
+        "statusCommand"
+      ]
+    }
   ],
   "display": null
 }

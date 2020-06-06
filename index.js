@@ -4,7 +4,6 @@
 
 // globals and imports
 var exec = require('child_process').exec;
-const jsdom = require("jsdom");
 
 // HomeKit API registration
 module.exports = (api) => {
@@ -25,7 +24,7 @@ class APCBackUpsHS500 {
       this.name = config.name || 'APC UPS';
       this.model = config.model || 'APC UPS Type';
       this.upsIpAddress = config.upsIpAddress;
-      this.statusCommand = config.statusCommand;
+      this.statusCommand = __dirname + '/' + config.statusCommand;
       this.serialNumber = config.serialNumber;
       this.pollTimer = config.pollTimer || 30; //default poll interval = 30 seconds
       this.lowBattery = config.lowBattery || 20; // default warn at 20% remaining
@@ -103,23 +102,23 @@ class APCBackUpsHS500 {
         if (callback) callback(err || new Error('Error getting state of ' + accessory.name));
       } else {
         // got something back
-        var xmlDoc = new jsdom.JSDOM(stdout);
-        if (xmlDoc.window.document.querySelector("parseerror")) {
-          // text wasn't XML
+        var upsresponse = JSON.parse( stdout.toString('utf-8').trim() );
+        if (!upsresponse) {
+          // text wasn't json
           var array = stdout.toString().split("\n");
-          accessory.log('XML error (got: ' + !array[0] + ')');
+          accessory.log('Error in json received (got: ' + !array[0] + ')');
           if (callback) callback(err || new Error('Error getting state of ' + accessory.name));
         } else {
-          // valid XML returned, hopefully with all the values we need
-          accessory.log.debug( xmlDoc.window.document.querySelector("UPSSTATUS").textContent );
-          if (xmlDoc.window.document.querySelector("UPSSTATUS").textContent != 'On Line') {
+          // valid json returned, hopefully with all the values we need
+          accessory.log.debug( 'UPS Status received: ' + upsresponse.upsstatus );
+          if (upsresponse.upsstatus != 'On Line') {
             accessory.state.contactSensorState = 1 // contact is ON, i.e. ALERT STATE (on battery)
           } else {
             accessory.state.contactSensorState = 0 // contact is OFF, i.e. normal conditions (on mains)
           }
 
-          accessory.log.debug( xmlDoc.window.document.querySelector("BATTERYLEVEL").textContent );
-          accessory.state.batteryLevel = xmlDoc.window.document.querySelector("BATTERYLEVEL").textContent;
+          accessory.log.debug( 'UPS Battery Level received: ' + upsresponse.batterylevel );
+          accessory.state.batteryLevel = upsresponse.batterylevel;
           if (accessory.state.batteryLevel < accessory.lowBattery) {
             accessory.state.statusLowBattery = 1 // BATTERY_LEVEL_LOW
           } else {
@@ -127,11 +126,11 @@ class APCBackUpsHS500 {
           }
 
           accessory.state.chargingState = 0; // Assume NOT_CHARGING otherwise
-          accessory.log.debug( xmlDoc.window.document.querySelector("BATTERYSTATUS").textContent );
-          if (xmlDoc.window.document.querySelector("BATTERYSTATUS").textContent == 'Charging') {
+          accessory.log.debug( 'UPS Battery Status received: ' + upsresponse.batterystatus );
+          if (upsresponse.batterystatus == 'Charging') {
             accessory.state.chargingState = 1; // CHARGING
           }
-          if (xmlDoc.window.document.querySelector("BATTERYSTATUS").textContent == 'Charged') {
+          if (upsresponse.batterystatus == 'Charged') {
             accessory.state.chargingState = 1; // CHARGING
           }
 
