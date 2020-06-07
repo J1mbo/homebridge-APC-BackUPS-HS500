@@ -1,4 +1,4 @@
-# [1.0.5]
+# [1.0.6]
 
 *** HomeBridge plugin for APC's HS500 'Structured Cabling' UPS ***
 

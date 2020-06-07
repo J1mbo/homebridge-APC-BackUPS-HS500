@@ -29,7 +29,7 @@ This pluging includes a script apc500.sh, which enables the management IP addres
 
 Full documentation about this script is available via lo-tech.co.uk at: https://www.lo-tech.co.uk/wiki/Apc500.sh. This UPS must be connected to the same VLAN as it's broadcast based. The commands are:
 
-To find a device on the local network: ./apc500.sh -f
-To set the IP to DHCP: ./apc500.sh -s 0.0.0.0
-To set the IP to a fixed address e.g. 192.168.1.10: ./apc500.sh -s 192.168.1.10
+- To find a device on the local network: ./apc500.sh -f
+- To set the IP to DHCP: ./apc500.sh -s 0.0.0.0
+- To set the IP to a fixed address e.g. 192.168.1.10: ./apc500.sh -s 192.168.1.10
 
