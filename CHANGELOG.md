@@ -1,23 +1,9 @@
-# [1.0.4]
+# [1.0.5]
 
-- Removed work in progress notice: first production release.
+*** HomeBridge plugin for APC's HS500 'Structured Cabling' UPS ***
 
-# [1.0.3]
+Thank you for trying this plugin. It provides a simple integration for APC's HS500 UPS along with a basic configuration utility..
 
-- Bugfix in battery level reporting
+If you have any feedback or wish to contribute or extend, please log an issue on the GitHub project page.
 
-# [1.0.2]
-
-- Revised data interchange to JSON, eliminating dependencies
-
-# [1.0.1]
-
-- Initial release based on external XML watcher
-
-# [1.0.0]
-
-- Initial release based on external XML watcher
-
-# [0.0.1]
-
-- Fork from cr3ative/homebridge-apcaccess
+This package includes a command-line configuration utility for the HS500 - apc500.sh - since APC's supplied config utility only works on Windows 2000 or maybe XP. This can be run from the commandline from the installtion directory to discover and configure the management IP address of the HS500. Please see the README on GitHub/NPM for details.

@@ -1,6 +1,6 @@
 {
   "name": "homebridge-apc-back-ups-hs500",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Homebridge plugin to connect to an APC Back-UPS HS500 UPS device.",
   "main": "index.js",
   "keywords": [
