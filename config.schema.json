@@ -2,6 +2,8 @@
   "pluginAlias": "APCBackUpsHS500",
   "pluginType": "accessory",
   "singular": false,
+  "headerDisplay": "Note: This plugin can auto-configure the UPS Management interface.",
+  "footerDisplay": "This plugin requires curl. To use auto-discovery and configuration, it also requires: net-tools, arping, xxd and socat. Install in OS before restarting HomeBridge using sudo apt install curl, net-tools, arping, xxd, socat",
   "schema": {
     "type": "object",
     "properties": {
@@ -16,15 +18,62 @@
         "type": "string",
         "required": false
       },
+      "autoConfigure": {
+        "title": "Auto-configure UPS Management Interface",
+        "type": "boolean",
+        "description": "Automatically configure the UPS with the IP address set below when plugin is started.",
+        "required": true,
+        "default": false
+      },
       "upsIpAddress": {
         "title": "UPS IP Address",
         "type": "string",
+        "description": "UPS IP address to use (and configure, if using autoConfigure). Enter 0.0.0.0 to configure the UPS for DHCP.",
+        "required": false,
+	"format": "ipv4"
+      },
+      "apcUsername": {
+        "title": "UPS Username",
+        "type": "string",
+        "description": "The configured username for the management interface, if this has been set.",
+        "default": "apc",
         "required": false
       },
-      "statusCommand": {
-        "title": "Command to retrieve UPS status JSON object",
+      "apcPassword": {
+        "title": "UPS Password",
         "type": "string",
-        "default": "check-power-json.sh",
+        "description": "The configured password for the management interface, if this has been set (note: characters only, no numbers).",
+        "default": "apc",
+        "required": false
+      },
+      "outlet1Locked": {
+        "title": "Lock Outlet 1",
+        "type": "boolean",
+        "required": true,
+        "default": false
+      },
+      "outlet2Locked": {
+        "title": "Lock Outlet 2",
+        "type": "boolean",
+        "required": true,
+        "default": false
+      },
+      "outlet3Locked": {
+        "title": "Lock Outlet 3",
+        "type": "boolean",
+        "required": true,
+        "default": false
+      },
+      "statusCommand": {
+        "title": "Shell script to retrieve UPS status JSON object and control the outlets",
+        "type": "string",
+        "default": "apc.sh",
+        "required": true
+      },
+      "configureCommand": {
+        "title": "Shell script to configure the UPS Management Interface",
+        "type": "string",
+        "default": "apc500.sh",
         "required": true
       },
       "serialNumber": {
@@ -35,7 +84,7 @@
       "pollInterval": {
         "title": "Interval (in seconds) to poll the status",
         "type": "integer",
-        "default": 10,
+        "default": 30,
         "required": true
       },
       "lowBattery": {
@@ -43,23 +92,80 @@
         "type": "integer",
         "default": 20,
         "required": true
+      },
+      "outlet1Name": {
+        "title": "Display Name for Outlet 1",
+        "type": "string",
+        "required": false
+      },
+      "outlet2Name": {
+        "title": "Display Name for Outlet 2",
+        "type": "string",
+        "required": false
+      },
+      "outlet3Name": {
+        "title": "Display Name for Outlet 3",
+        "type": "string",
+        "required": false
       }
     }
   },
   "form": [
-    "name",
-    "model",
-    "upsIpAddress",
-    "serialNumber",
-    "pollInterval",
-    "lowBattery",
+    {
+      "type": "fieldset",
+      "expandable": true,
+      "title": "UPS Management Interface",
+      "description": "These settings define how to reach the UPS.",
+      "items": [
+        "autoConfigure",
+        "upsIpAddress",
+        "apcUsername",
+        "apcPassword",
+        "pollInterval"
+      ]
+    },
+    {
+      "type": "fieldset",
+      "expandable": true,
+      "title": "Display Settings",
+      "description": "These settings control how the UPS information will be displayed within HomeKit.",
+      "items": [
+        "name",
+        "model",
+        "serialNumber",
+        "outlet1Name",
+        "outlet2Name",
+        "outlet3Name"
+      ]
+    },
+    {
+      "type": "fieldset",
+      "expandable": true,
+      "title": "Outlet Control",
+      "description": "Lock outlets in their current state to prevent HomeKit switching them. Note: HomeKit will show an exclamation mark against a locked outlet if a control request is sent to it.",
+      "items": [
+        "outlet1Locked",
+        "outlet2Locked",
+        "outlet3Locked"
+      ]
+    },
+    {
+      "type": "fieldset",
+      "expandable": true,
+      "title": "Alert thresholds",
+      "description": "These settings define when HomeKit shows alert conditions.",
+      "items": [
+        "lowBattery"
+      ]
+    },
     {
       "type": "fieldset",
       "expandable": true,
       "title": "Advanced Settings",
       "description": "Don't change these, unless you understand what you're doing.",
       "items": [
-        "statusCommand"
+        "statusCommand",
+        "configureCommand"
       ]
     }
   ],

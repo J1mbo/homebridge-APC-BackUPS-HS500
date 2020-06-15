@@ -1,9 +1,24 @@
-# [1.0.6]
+# [2.0.0]
 
 *** HomeBridge plugin for APC's HS500 'Structured Cabling' UPS ***
 
-Thank you for trying this plugin. It provides a simple integration for APC's HS500 UPS along with a basic configuration utility..
+Thank you for trying this plugin! It enables monitoring and control of APC's HS500 UPS from HomeKit, as well as automatic management interface configuration.
+
+Version 2:
+Adds support for:
+- automatic configuration of UPS management interface for static IP or DHCP
+- auto-discovery of UPS network address
+- control of the three UPS outputs (by exposing them as outlet devices)
+- allows the blocking of UPS outlet control to prevent accidental power-off
+- reporting of UPS load and run-time (through lightsensor devices)
+
+Version 1:
+Provides:
+- monitoring of the UPS mains inlet via Contact Sensor
+- monitoring of the battery charge level and charging status through Battery Service.
 
 If you have any feedback or wish to contribute or extend, please log an issue on the GitHub project page.
 
-This package includes a command-line configuration utility for the HS500 - apc500.sh - since APC's supplied config utility only works on Windows 2000 or maybe XP. This can be run from the commandline from the installtion directory to discover and configure the management IP address of the HS500. Please see the README on GitHub/NPM for details.
+Depends on curl and, for auto discovery and configuration, net-tools, apring, xxd and socat. Install these packages in your OS (debian, ubuntu, raspbian) using:
+
+sudo apt install curl, net-tools, arping, xxd, socat
