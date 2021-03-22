@@ -1,8 +1,10 @@
-# [2.0.0]
+# [2.0.1]
 
 *** HomeBridge plugin for APC's HS500 'Structured Cabling' UPS ***
 
 Thank you for trying this plugin! It enables monitoring and control of APC's HS500 UPS from HomeKit, as well as automatic management interface configuration.
+
+2.0.1 - fixes for spurious validation messages on startup.
 
 Version 2:
 Adds support for:

@@ -1,32 +1,8 @@
 {
-  "_from": "homebridge-apc-back-ups-hs500@latest",
-  "_inBundle": false,
-  "_integrity": "sha512-dJPP3u6n/x1g7BUbnxmcKxsBaNL6SCpKpgMY1dji0H/nxqNLZ1BEy1FwtiOrXn0RTq0+vpDz+JhSFq3jilOPnw==",
-  "_location": "/homebridge-apc-back-ups-hs500",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "tag",
-    "registry": true,
-    "raw": "homebridge-apc-back-ups-hs500@latest",
-    "name": "homebridge-apc-back-ups-hs500",
-    "escapedName": "homebridge-apc-back-ups-hs500",
-    "rawSpec": "latest",
-    "saveSpec": null,
-    "fetchSpec": "latest"
-  },
-  "_requiredBy": [
-    "#USER",
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/homebridge-apc-back-ups-hs500/-/homebridge-apc-back-ups-hs500-1.0.6.tgz",
-  "_shasum": "7ca15d58617a550e19195ca649cc29212c7d9fbb",
-  "_spec": "homebridge-apc-back-ups-hs500@latest",
-  "_where": "/usr/local/lib",
   "author": "James Pearce",
   "bugs": {
     "url": "https://github.com/J1mbo/homebridge-APC-Back-UPS-HS500/issues"
   },
-  "dependencies": {},
   "deprecated": false,
   "description": "Homebridge plugin to connect to an APC Back-UPS HS500 UPS device.",
   "devDependencies": {},
@@ -48,7 +24,7 @@
     "type": "git",
     "url": "git+https://github.com/J1mbo/homebridge-APC-Back-UPS-HS500.git"
   },
-  "version": "2.0.0",
+  "version": "2.0.1",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }

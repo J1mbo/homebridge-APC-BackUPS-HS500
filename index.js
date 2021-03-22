@@ -1,6 +1,8 @@
 // Plugin for the APC UPS monitoring
 // Copyright (c) James Pearce, 2020
-// Last updated June 2020
+// Last updated March 2021
+//
+// Mar-21 - eliminate warnings on startup
 //
 // Version 2:
 // Adds support for:
@@ -86,8 +88,8 @@ class APCBackUpsHS500 {
         batteryLevel: 0,
         chargingState: 0,
         statusLowBattery: 0,
-        upsLoad: 0,
-        runtime: 0,
+        upsLoad: 0.01,
+        runtime: 0.01,
         outlet1On: 1,
         outlet1InUse: 1,
         outlet2On: 1,
@@ -197,6 +199,8 @@ class APCBackUpsHS500 {
       }); // exec
     } else {
       // Initialise the plugin ahead of any function call with static configured IP address
+      //this.upsLoadService.getCharacteristic(Characteristic.CurrentAmbientLightLevel).props.unit = "Watts";
+      //this.upsRuntimeService.getCharacteristic(Characteristic.CurrentAmbientLightLevel).props.unit = "Minutes";
       accessory.pollUpsState();
     }
     // and retrun the services to HomeBridge
