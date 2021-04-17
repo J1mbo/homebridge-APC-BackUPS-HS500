@@ -24,7 +24,7 @@
     "type": "git",
     "url": "git+https://github.com/J1mbo/homebridge-APC-Back-UPS-HS500.git"
   },
-  "version": "2.0.1",
+  "version": "2.0.2",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }

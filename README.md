@@ -1,3 +1,6 @@
+[![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
+[![Donate](https://badgen.net/badge/donate/paypal)](https://paypal.me/HomebridgeJ1mbo)
+
 # homebridge-APC-Back-UPS-HS500
 
 A HomeBridge interface for APC's 'Structured Cabling' Back-UPS HS500 UPS device, capable of monitoring, controlling and configuring the UPS.
@@ -28,4 +31,5 @@ Installed through HomeBridge plugins UI, the settings are fully configurable in 
 
 # Issues and Contact
 
-Please raise an issue should you come across one.
+Please raise an issue should you come across one via Github.
+
