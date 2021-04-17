@@ -24,7 +24,11 @@
     "type": "git",
     "url": "git+https://github.com/J1mbo/homebridge-APC-Back-UPS-HS500.git"
   },
-  "version": "2.0.2",
+  "funding": {
+    "type": "paypal",
+    "url": "https://paypal.me/HomebridgeJ1mbo"
+  },
+  "version": "2.0.3",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }
