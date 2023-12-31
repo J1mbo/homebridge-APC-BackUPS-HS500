@@ -505,11 +505,11 @@ class APCBackUpsHS500 {
         exec(command, function (err, stdout, stderr) {
           if (err) {
             accessory.log('Error: ' + err + ' ' + stderr);
-            accessory.state.updating ^= 32;
+            accessory.state.updating ^= 8;
             accessory.outlet1RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
           } else {
             // update the object characteristics with the change
-            accessory.state.updating ^= 32;
+            accessory.state.updating ^= 8;
             accessory.log.debug('setOutlet1Reboot command completed without error.');
             accessory.outlet1RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
           }
@@ -545,9 +545,6 @@ class APCBackUpsHS500 {
       } else {
         accessory.log('Outlet 2 Reboot cancellation requested');
       }
-      accessory.log('outlet1RebootEnabled: ' + accessory.outlet1RebootEnabled);
-      accessory.log('outlet2RebootEnabled: ' + accessory.outlet2RebootEnabled);
-      accessory.log('outlet3RebootEnabled: ' + accessory.outlet3RebootEnabled);
       if (!(accessory.outlet2RebootEnabled)) {
         accessory.log('Error: Outlet 2 is locked. Command not sent to device.');
         if (callback) callback(new Error('Error: Outlet 2 is locked (' + accessory.name + ')'), 0); // always report 0 for the reboot switch
@@ -562,11 +559,11 @@ class APCBackUpsHS500 {
         exec(command, function (err, stdout, stderr) {
           if (err) {
             accessory.log('Error: ' + err + ' ' + stderr);
-            accessory.state.updating ^= 32;
+            accessory.state.updating ^= 16;
             accessory.outlet2RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
           } else {
             // update the object characteristics with the change
-            accessory.state.updating ^= 32;
+            accessory.state.updating ^= 16;
             accessory.log.debug('setOutlet2Reboot command completed without error.');
             accessory.outlet2RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
           }
