@@ -64,6 +64,24 @@
         "required": true,
         "default": false
       },
+      "outlet1RebootEnabled": {
+        "title": "Allow Outlet 1 Reboot",
+        "type": "boolean",
+        "required": true,
+        "default": true
+      },
+      "outlet2RebootEnabled": {
+        "title": "Allow Outlet 2 Reboot",
+        "type": "boolean",
+        "required": true,
+        "default": true
+      },
+      "outlet3RebootEnabled": {
+        "title": "Allow Outlet 3 Reboot",
+        "type": "boolean",
+        "required": true,
+        "default": true
+      },
       "statusCommand": {
         "title": "Shell script to retrieve UPS status JSON object and control the outlets",
         "type": "string",
@@ -142,11 +160,14 @@
       "type": "fieldset",
       "expandable": true,
       "title": "Outlet Control",
-      "description": "Lock outlets in their current state to prevent HomeKit switching them. Note: HomeKit will show an exclamation mark against a locked outlet if a control request is sent to it.",
+      "description": "Locking outlets prevents their current state being changed using HomeKit. They can however still be rebooted if that option is enabled.",
       "items": [
         "outlet1Locked",
         "outlet2Locked",
-        "outlet3Locked"
+        "outlet3Locked",
+	"outlet1RebootEnabled",
+	"outlet2RebootEnabled",
+	"outlet3RebootEnabled"
       ]
     },
     {

@@ -1,8 +1,10 @@
 // Plugin for the APC UPS monitoring
-// Copyright (c) James Pearce, 2020
-// Last updated March 2021
+// Copyright (c) James Pearce, 2020,2023
+// Last updated December 2023
 //
-// Mar-21 - eliminate warnings on startup
+// Version 3:
+// - Adds support for the UPS 'reboot' function
+// - Fixes embedded accessory display names in IOS 16 and above
 //
 // Version 2:
 // Adds support for:
@@ -77,11 +79,17 @@ class APCBackUpsHS500 {
       this.outlet1Name = config.outlet1Name || 'Outlet 1';
       this.outlet2Name = config.outlet2Name || 'Outlet 2';
       this.outlet3Name = config.outlet3Name || 'Outlet 3';
+      this.outlet1RebootName = 'Reboot ' + config.outlet1Name;
+      this.outlet2RebootName = 'Reboot ' + config.outlet2Name;
+      this.outlet3RebootName = 'Reboot ' + config.outlet3Name;
       this.apcUsername = config.apcUsername || 'apc';
       this.apcPassword = config.apcPassword || 'apc';
       this.outlet1Locked = config.outlet1Locked || 0;
       this.outlet2Locked = config.outlet2Locked || 0;
       this.outlet3Locked = config.outlet3Locked || 0;
+      this.outlet1RebootEnabled = config.outlet1RebootEnabled;
+      this.outlet2RebootEnabled = config.outlet2RebootEnabled;
+      this.outlet3RebootEnabled = config.outlet3RebootEnabled;
 
       this.state = {
         contactSensorState: 0,
@@ -104,9 +112,41 @@ class APCBackUpsHS500 {
       this.batteryService = new this.Service.BatteryService(); // reports charging status, % charge, and low battery condition
       this.upsLoadService = new this.Service.LightSensor("Load (Watts)","Load"); // just a way to report UPS load
       this.upsRuntimeService = new this.Service.LightSensor("Runtime (Minutes)","Runtime"); // just a way to report UPS runtime
-      this.outlet1Service = new this.Service.Outlet(this.outlet1Name,"Outlet1"); // enables control of output 1
-      this.outlet2Service = new this.Service.Outlet(this.outlet2Name,"Outlet2"); // enables control of output 2
-      this.outlet3Service = new this.Service.Outlet(this.outlet3Name,"Outlet3"); // enables control of output 3
+      this.outlet1Service = new this.Service.Outlet(this.outlet1Name,"Outlet1"); // enables on/off control of output 1
+      this.outlet2Service = new this.Service.Outlet(this.outlet2Name,"Outlet2"); // enables on/off control of output 2
+      this.outlet3Service = new this.Service.Outlet(this.outlet3Name,"Outlet3"); // enables on/off control of output 3
+      this.outlet1RebootService = new this.Service.Switch("Reboot Outlet1","Outlet1"); // enables reboot of output 1
+      this.outlet2RebootService = new this.Service.Switch("Reboot Outlet2","Outlet2"); // enables reboot of output 2
+      this.outlet3RebootService = new this.Service.Switch("Reboot Outlet3","Outlet3"); // enables reboot of output 3
+
+      // IOS 16 and above over-writes the descriptive names set against the accesories
+      // The following restores them to display as previously (e.g., on IOS 15)
+      this.contactSensor.addOptionalCharacteristic(this.Characteristic.ConfiguredName);
+      this.contactSensor.setCharacteristic(this.Characteristic.ConfiguredName, 'Mains Status');
+
+      this.upsLoadService.addOptionalCharacteristic(this.Characteristic.ConfiguredName);
+      this.upsLoadService.setCharacteristic(this.Characteristic.ConfiguredName, 'Load (Watts)');
+
+      this.upsRuntimeService.addOptionalCharacteristic(this.Characteristic.ConfiguredName);
+      this.upsRuntimeService.setCharacteristic(this.Characteristic.ConfiguredName, 'Runtime (Minutes)');
+
+      this.outlet1Service.addOptionalCharacteristic(this.Characteristic.ConfiguredName);
+      this.outlet1Service.setCharacteristic(this.Characteristic.ConfiguredName, this.outlet1Name);
+
+      this.outlet2Service.addOptionalCharacteristic(this.Characteristic.ConfiguredName);
+      this.outlet2Service.setCharacteristic(this.Characteristic.ConfiguredName, this.outlet2Name);
+
+      this.outlet3Service.addOptionalCharacteristic(this.Characteristic.ConfiguredName);
+      this.outlet3Service.setCharacteristic(this.Characteristic.ConfiguredName, this.outlet3Name);
+
+      this.outlet1RebootService.addOptionalCharacteristic(this.Characteristic.ConfiguredName);
+      this.outlet1RebootService.setCharacteristic(this.Characteristic.ConfiguredName, this.outlet1RebootName);
+
+      this.outlet2RebootService.addOptionalCharacteristic(this.Characteristic.ConfiguredName);
+      this.outlet2RebootService.setCharacteristic(this.Characteristic.ConfiguredName, this.outlet2RebootName);
+
+      this.outlet3RebootService.addOptionalCharacteristic(this.Characteristic.ConfiguredName);
+      this.outlet3RebootService.setCharacteristic(this.Characteristic.ConfiguredName, this.outlet3RebootName);
 
       // create an information service...
       this.informationService = new this.Service.AccessoryInformation()
@@ -131,12 +171,10 @@ class APCBackUpsHS500 {
         .on('get', this.getStatusLowBattery.bind(this));
 
       this.upsLoadService
-//        .setCharacteristic(this.Characteristic.Name, "Current Load (Watts)")
         .getCharacteristic(this.Characteristic.CurrentAmbientLightLevel)
         .on('get', this.getUpsLoad.bind(this));
 
       this.upsRuntimeService
-//        .setCharacteristic(this.Characteristic.Name, "Current Runtime (minutes)")
         .getCharacteristic(this.Characteristic.CurrentAmbientLightLevel)
         .on('get', this.getUpsRuntime.bind(this));
 
@@ -164,6 +202,19 @@ class APCBackUpsHS500 {
         .getCharacteristic(this.Characteristic.OutletInUse)
         .on('get', this.getOutlet3InUse.bind(this));
 
+      // Outlet reboot switches - these default to 'off' and trigger momentarily, returning to 'off'
+      this.outlet1RebootService
+        .getCharacteristic(this.Characteristic.On)
+        .on('get', this.getOutlet1RebootState.bind(this))
+        .on('set', this.setOutlet1RebootState.bind(this));
+      this.outlet2RebootService
+        .getCharacteristic(this.Characteristic.On)
+        .on('get', this.getOutlet2RebootState.bind(this))
+        .on('set', this.setOutlet2RebootState.bind(this));
+      this.outlet3RebootService
+        .getCharacteristic(this.Characteristic.On)
+        .on('get', this.getOutlet3RebootState.bind(this))
+        .on('set', this.setOutlet3RebootState.bind(this));
   } // constructor
 
   // mandatory getServices function tells HomeBridge how to use this object
@@ -213,6 +264,9 @@ class APCBackUpsHS500 {
       accessory.outlet1Service,
       accessory.outlet2Service,
       accessory.outlet3Service,
+      accessory.outlet1RebootService,
+      accessory.outlet2RebootService,
+      accessory.outlet3RebootService,
     ];
   } // getServices()/
 
@@ -411,6 +465,177 @@ class APCBackUpsHS500 {
     callback(null, accessory.state.outlet3InUse);
   }
 
+
+  // reboot handlers
+
+  getOutlet1RebootState(callback) {
+    var accessory = this;
+    accessory.log.debug('Outlet 1 (', accessory.Outlet1Name, ') Reboot Switch State is off.'); // always returns 0
+    callback(null, 0); // always returns 0 (off)
+  }
+
+  setOutlet1RebootState(on, callback) {
+    var accessory = this;
+    var Characteristic = this.Characteristic;
+    var command;
+    accessory.log.debug('setOutlet1RebootState: ', on);
+    accessory.pollState(); // (re)start polling timer
+    if ((accessory.state.updating & 8) == 8) {
+      // an instance of this function is already running; return switch active
+      accessory.log.debug('setOutlet1RebootState is already running.');
+      callback(null, 1); // switch is 'ON' - function is running already
+    } else {
+      accessory.state.updating |= 8; // flag that we are updating
+      if (on) {
+        accessory.log('Outlet 1 Reboot requested');
+      } else {
+        accessory.log('Outlet 1 Reboot cancellation requested');
+      }
+      if (!accessory.outlet1RebootEnabled) {
+        accessory.log('Error: Outlet 1 is locked. Command not sent to device.');
+        if (callback) callback(new Error('Error: Outlet 1 is locked (' + accessory.name + ')'), 0); // always report 0 for the reboot switch
+        accessory.state.updating ^= 8;
+      } else {
+        if (on) {
+          command = accessory.upsCommand + " ip=" + accessory.upsIpAddress + " output3=reboot";
+        } else {
+          accessory.log('Outlet 1 Reboot cancellation requested does not carry any action since this is done within the UPS itself.');
+        }
+        command = command + " user=" + accessory.apcUsername + " pass=" + pwcode(accessory.apcPassword);
+        exec(command, function (err, stdout, stderr) {
+          if (err) {
+            accessory.log('Error: ' + err + ' ' + stderr);
+            accessory.state.updating ^= 32;
+            accessory.outlet1RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
+          } else {
+            // update the object characteristics with the change
+            accessory.state.updating ^= 32;
+            accessory.log.debug('setOutlet3Reboot command completed without error.');
+            accessory.outlet1RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
+          }
+        }); // exec function
+        if (callback) { // call back immediately, whilst script runs
+          callback(null, 0);
+        }
+      } // if accessory.Outlet1Locked
+    } // if/else already running
+  } // setOutlet1RebootState
+
+
+  getOutlet2RebootState(callback) {
+    var accessory = this;
+    accessory.log.debug('Outlet 2 (', accessory.Outlet2Name, ') Reboot Switch State is off.'); // always returns 0
+    callback(null, 0); // always returns 0 (off)
+  }
+
+  setOutlet2RebootState(on, callback) {
+    var accessory = this;
+    var Characteristic = this.Characteristic;
+    var command;
+    accessory.log.debug('setOutlet2RebootState: ', on);
+    accessory.pollState(); // (re)start polling timer
+    if ((accessory.state.updating & 16) == 16) {
+      // an instance of this function is already running; return switch active
+      accessory.log.debug('setOutlet2RebootState is already running.');
+      callback(null, 1); // switch is 'ON' - function is running already
+    } else {
+      accessory.state.updating |= 16; // flag that we are updating
+      if (on) {
+        accessory.log('Outlet 2 Reboot requested');
+      } else {
+        accessory.log('Outlet 2 Reboot cancellation requested');
+      }
+      accessory.log('outlet1RebootEnabled: ' + accessory.outlet1RebootEnabled);
+      accessory.log('outlet2RebootEnabled: ' + accessory.outlet2RebootEnabled);
+      accessory.log('outlet3RebootEnabled: ' + accessory.outlet3RebootEnabled);
+      if (!(accessory.outlet2RebootEnabled)) {
+        accessory.log('Error: Outlet 2 is locked. Command not sent to device.');
+        if (callback) callback(new Error('Error: Outlet 2 is locked (' + accessory.name + ')'), 0); // always report 0 for the reboot switch
+        accessory.state.updating ^= 16;
+      } else {
+        if (on) {
+          command = accessory.upsCommand + " ip=" + accessory.upsIpAddress + " output3=reboot";
+        } else {
+          accessory.log('Outlet 2 Reboot cancellation requested does not carry any action since this is done within the UPS itself.');
+        }
+        command = command + " user=" + accessory.apcUsername + " pass=" + pwcode(accessory.apcPassword);
+        exec(command, function (err, stdout, stderr) {
+          if (err) {
+            accessory.log('Error: ' + err + ' ' + stderr);
+            accessory.state.updating ^= 32;
+            accessory.outlet2RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
+          } else {
+            // update the object characteristics with the change
+            accessory.state.updating ^= 32;
+            accessory.log.debug('setOutlet3Reboot command completed without error.');
+            accessory.outlet2RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
+          }
+        }); // exec function
+        if (callback) { // call back immediately, whilst script runs
+          callback(null, 0);
+        }
+      } // if accessory.Outlet2Locked
+    } // if/else already running
+  } // setOutlet2RebootState
+
+
+  getOutlet3RebootState(callback) {
+    var accessory = this;
+    accessory.log.debug('Outlet 3 (', accessory.outlet3Name, ') Reboot Switch State is off.'); // always returns 0
+    callback(null, 0); // always returns 0 (off)
+  }
+
+  setOutlet3RebootState(on, callback) {
+    var accessory = this;
+    var Characteristic = this.Characteristic;
+    var command;
+    accessory.log.debug('setOutlet3RebootState: ', on);
+    accessory.pollState(); // (re)start polling timer
+    if ((accessory.state.updating & 32) == 32) {
+      // an instance of this function is already running; return switch active
+      accessory.log.debug('setOutlet3RebootState is already running.');
+      callback(null, 1); // switch is 'ON' - function is running already
+    } else {
+      accessory.state.updating |= 32; // flag that we are updating
+      if (on) {
+        accessory.log('Outlet 3 Reboot requested');
+      } else {
+        accessory.log('Outlet 3 Reboot cancellation requested');
+      }
+      if (!accessory.outlet3RebootEnabled) {
+        accessory.log('Error: Outlet 3 is locked. Command not sent to device.');
+        if (callback) callback(new Error('Error: Outlet 3 is locked (' + accessory.name + ')'), 0); // always report 0 for the reboot switch
+        accessory.state.updating ^= 32;
+      } else {
+        if (on) {
+          command = accessory.upsCommand + " ip=" + accessory.upsIpAddress + " output3=reboot";
+        } else {
+          accessory.log('Outlet 3 Reboot cancellation requested does not carry any action since this is done within the UPS itself.');
+        }
+        command = command + " user=" + accessory.apcUsername + " pass=" + pwcode(accessory.apcPassword);
+        exec(command, function (err, stdout, stderr) {
+          if (err) {
+            accessory.log('Error: ' + err + ' ' + stderr);
+            accessory.state.updating ^= 32;
+            accessory.outlet3RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
+          } else {
+            // update the object characteristics with the change
+            accessory.state.updating ^= 32;
+            accessory.log.debug('setOutlet3Reboot command completed without error.');
+            accessory.outlet3RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
+          }
+        }); // exec function
+        if (callback) { // call back immediately, whilst script runs
+          callback(null, 0);
+        }
+      } // if accessory.outlet3Locked
+    } // if/else already running
+  } // setOutlet3RebootState
+
+
+
+  // mains input active
+
   getContactState(callback) {
     var accessory = this;
     accessory.log.debug('Contact State (=On Mains flag): ', accessory.state.contactSensorState);
@@ -521,6 +746,9 @@ class APCBackUpsHS500 {
               accessory.outlet2Service.updateCharacteristic(Characteristic.OutletInUse, accessory.state.outlet2InUse);
               accessory.outlet3Service.updateCharacteristic(Characteristic.On, accessory.state.outlet3On);
               accessory.outlet3Service.updateCharacteristic(Characteristic.OutletInUse, accessory.state.outlet3InUse);
+              accessory.outlet1RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
+              accessory.outlet2RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
+              accessory.outlet3RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
             } // if (accessory.state.updating)/else
           }
         }

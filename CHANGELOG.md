@@ -1,12 +1,17 @@
-# [2.0.3]
+# [3.0.0]
 
 *** HomeBridge plugin for APC's HS500 'Structured Cabling' UPS ***
 
 Thank you for trying this plugin! It enables monitoring and control of APC's HS500 UPS from HomeKit, as well as automatic management interface configuration.
 
+Bugfixes:
 2.0.3 - Added option to make a donation through Homebridge UI
 2.0.2 - README update to reflect verified status
 2.0.1 - fixes for spurious validation messages on startup.
+
+Version 3:
+- Added support for UPS 'reboot' function - which power-cycles an outlet. This makes it possible to safely power-cycle an outlet even when HomeBridge is itself powered from that outlet (in which case, Homebridge will also be power-cycled).
+- Added support to display embedded accessory names correctly on iOS 16/17
 
 Version 2:
 Adds support for:
