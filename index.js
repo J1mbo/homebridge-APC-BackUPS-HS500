@@ -497,7 +497,7 @@ class APCBackUpsHS500 {
         accessory.state.updating ^= 8;
       } else {
         if (on) {
-          command = accessory.upsCommand + " ip=" + accessory.upsIpAddress + " output3=reboot";
+          command = accessory.upsCommand + " ip=" + accessory.upsIpAddress + " output1=reboot";
         } else {
           accessory.log('Outlet 1 Reboot cancellation requested does not carry any action since this is done within the UPS itself.');
         }
@@ -510,7 +510,7 @@ class APCBackUpsHS500 {
           } else {
             // update the object characteristics with the change
             accessory.state.updating ^= 32;
-            accessory.log.debug('setOutlet3Reboot command completed without error.');
+            accessory.log.debug('setOutlet1Reboot command completed without error.');
             accessory.outlet1RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
           }
         }); // exec function
@@ -554,7 +554,7 @@ class APCBackUpsHS500 {
         accessory.state.updating ^= 16;
       } else {
         if (on) {
-          command = accessory.upsCommand + " ip=" + accessory.upsIpAddress + " output3=reboot";
+          command = accessory.upsCommand + " ip=" + accessory.upsIpAddress + " output2=reboot";
         } else {
           accessory.log('Outlet 2 Reboot cancellation requested does not carry any action since this is done within the UPS itself.');
         }
@@ -567,7 +567,7 @@ class APCBackUpsHS500 {
           } else {
             // update the object characteristics with the change
             accessory.state.updating ^= 32;
-            accessory.log.debug('setOutlet3Reboot command completed without error.');
+            accessory.log.debug('setOutlet2Reboot command completed without error.');
             accessory.outlet2RebootService.updateCharacteristic(Characteristic.On, 0); // always returns 0 = OFF
           }
         }); // exec function

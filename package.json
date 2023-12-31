@@ -28,7 +28,7 @@
     "type": "paypal",
     "url": "https://paypal.me/HomebridgeJ1mbo"
   },
-  "version": "3.0.0",
+  "version": "3.0.1",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }
